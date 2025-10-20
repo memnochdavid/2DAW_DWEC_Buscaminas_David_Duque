@@ -77,92 +77,51 @@ footer:hover {
     background-color: rgb(66, 66, 66);
     transform: scale(1.02);
 }
-#tablero {
+#tablero{
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 1rem;
+}
+table {
+    margin: 0;
+    padding: 0;
     width: 100%;
-    box-sizing: border-box;
-}
-
-/* 🔹 TABLA PRINCIPAL */
-#tabla {
-    border-collapse: collapse;
-    table-layout: fixed;       /* Fija el tamaño de las celdas */
+    height: auto;
     border: 4px solid black;
-    background-color: black;
-    aspect-ratio: 1 / 1;       /* Mantiene forma cuadrada del tablero */
-    width: 90vmin;             /* Tamaño dinámico según la pantalla */
-    max-width: 700px;
+    background-color: rgb(0, 0, 0);
+    /*border-collapse: collapse;*/
+    /*table-layout: auto; !* celdas crecen según contenido *!*/
 }
-
-/* 🔹 CELDAS */
 .casilla {
     border: 1px solid black;
-    background-color: rgb(255, 117, 117);
     text-align: center;
-    vertical-align: middle;
-    padding: 0;
-    cursor: pointer;
-    transition: box-shadow 0.1s ease-in-out, background-color 0.1s ease-in-out;
-    position: relative;
-}
-
-/* ✅ Efecto hover sin mover la tabla */
-.casilla:hover {
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5) inset;
-    background-color: rgb(255, 160, 160);
-}
-
-
-/* 🔹 IMÁGENES DENTRO DE LAS CASILLAS */
-.img_casilla {
-    width: 100%;
+    width: 100px;
     height: 100%;
-    object-fit: contain;
-    display: block;
-    pointer-events: none; /* evita interferir con los clics */
-}
-
-/* 🔹 TEXTO DENTRO DE LAS CASILLAS */
-.txt_casilla {
-    font-size: calc(2vmin + 6px); /* tamaño adaptable */
-    display: flex;
-    align-items: center;
+    align-content: center;
     justify-content: center;
+    background-color: rgb(255, 117, 117);
+    padding: 0; /* sin padding extra */
+    cursor: pointer;
+    transition: all 0.1s ease-in-out;
+}
+.casilla:hover {
+    /*transform: scale(1.03);*/
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
+    backdrop-filter: brightness(150%);
+    border: 4px solid black;
+}
+
+.img_casilla{
     width: 100%;
-    height: 100%;
-    margin: 0;
-    line-height: 1;
-    font-weight: bold;
-    color: #111;
-    pointer-events: none; /* evita interferir con los clics */
+    height: auto;
+    display: block;
 }
-
-/* 🔹 MEDIA QUERIES para pantallas pequeñas */
-@media (max-width: 600px) {
-    #tabla {
-        width: 95vmin;
-        border-width: 3px;
-    }
-
-    .casilla {
-        border-width: 1px;
-    }
-
-    .txt_casilla {
-        font-size: calc(3vmin + 4px);
-    }
-}
-
-/* 🔹 MEDIA QUERIES para pantallas grandes */
-@media (min-width: 1200px) {
-    #tabla {
-        max-width: 800px;
-    }
-
-    .txt_casilla {
-        font-size: 28px;
-    }
+.txt_casilla {
+    font-size: 20px;
+    margin: 0;        /* elimina márgenes por defecto */
+    line-height: 1;   /* opcional, controla la altura de línea */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;     /* fuerza a ocupar la altura de la celda */
 }
