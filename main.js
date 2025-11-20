@@ -230,7 +230,7 @@ function tableroHTML(tablero, posX = -1, posY = -1) {
 }
 
 function pulsaCasilla(row, col){
-    if (!juego.iniciado || juego.fin) return;
+    if (!juego.iniciado) return;
 
     let posX = row;
     let posY = col;
@@ -278,7 +278,9 @@ function botonGuardar() {
         JSON.parse(JSON.stringify(juego.tableroReal)),
         JSON.parse(JSON.stringify(juego.tableroVisible)),
         juego.numMinas,
-        juego.turnos
+        juego.turnos,
+        // juego.fin = false,
+        // juego.iniciado = true,
     );
     console.table("Partida guardada:", save)//debug
     alert("Partida guardada!");
@@ -290,6 +292,8 @@ function botonCargar() {
         juego.tableroVisible = JSON.parse(JSON.stringify(save.tableroVisible));
         juego.numMinas = save.minasRestantes;
         juego.turnos = save.movimientos;
+        juego.fin = false;
+        juego.iniciado = true;
         alert("Partida cargada!");
         mostrarTablero(juego.tableroVisible);
         console.table("Partida cargada:", save)//debug
