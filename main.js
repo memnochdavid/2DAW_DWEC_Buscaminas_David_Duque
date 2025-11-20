@@ -1,15 +1,24 @@
+let juego = {
+    iniciado: false,
+    size: 0,
+    turnos: 0,
+    numMinas: 0,
+    tableroReal: [],
+    tableroVisible: [],
+    fin: false,
+};
+let save;
 
-function getRandomInt(max) {
+const getRandomInt =(max)=>{
     return Math.floor(Math.random() * max);
 }
 
-function creaTablero(size) {
+const creaTablero = (size) => {
     //esta forma de crear un array con valores deseados la vi en internet, paar el ejercicio del juego de la vida
     return Array.from({ length: size }, () => Array(size).fill("X"));
 }
 
-
-function validaInput(n, opc, sizeTablero = 0) {
+const validaInput =(n,opc,sizeTablero = 0) =>{
     switch (opc) {
         case 1://tablero
             return n >= 5; //mínimo 5x5
@@ -22,7 +31,7 @@ function validaInput(n, opc, sizeTablero = 0) {
     }
 }
 
-function pideSizeTablero() {
+const pideSizeTablero=()=>{
     let size;
     while (true) {
         size = parseInt((prompt("Tamaño del tablero: ")));
@@ -31,7 +40,7 @@ function pideSizeTablero() {
     }
 }
 
-function pideCoordenada(tag, sizeTablero){
+const pideCoordenada = (tag, sizeTablero)=>{
     let pos;
     while (true) {
         pos = parseInt(prompt(`Coordenada ${tag}:`));
@@ -42,7 +51,7 @@ function pideCoordenada(tag, sizeTablero){
 
 
 
-function colocaMinas(tablero, cantidad) {//coloca minas deseadas en posición random dentro del tablero
+const colocaMinas=(tablero, cantidad)=>{//coloca minas deseadas en posición random dentro del tablero
     let size = tablero.length;
     let minasColocadas = 0;//contador
 
@@ -57,7 +66,7 @@ function colocaMinas(tablero, cantidad) {//coloca minas deseadas en posición ra
     }
 }
 
-function contarMinasAdyacentes(tablero, posX, posY) {//sólo devuelve el número de minas adyacentes a la casilla que recibe
+const contarMinasAdyacentes=(tablero, posX, posY)=>{//sólo devuelve el número de minas adyacentes a la casilla que recibe
     let size = tablero.length;
     let total = 0;
 
@@ -79,7 +88,7 @@ function contarMinasAdyacentes(tablero, posX, posY) {//sólo devuelve el número
     return total;
 }
 
-function generaAdyacentes(tablero) {//rellena las casillas que rodean a las minas
+const generaAdyacentes=(tablero)=> {//rellena las casillas que rodean a las minas
     let size = tablero.length;
     for (let i = 0; i < size; i++) {
         for (let j = 0; j < size; j++) {
@@ -92,10 +101,10 @@ function generaAdyacentes(tablero) {//rellena las casillas que rodean a las mina
 }
 
 //hace lo que dice
-function mostrarTablero(tableroVisible) {
+const mostrarTablero=(tableroVisible)=> {
     console.table(tableroVisible);
 }
-function compruebaAdyacentes(tableroReal, tableroVisible, posX, posY) {
+const compruebaAdyacentes=(tableroReal, tableroVisible, posX, posY)=> {
     let size = tableroReal.length;
     //comprueba los límites del tablero
     if (posX < 0 || posX >= size || posY < 0 || posY >= size) return;
@@ -121,7 +130,7 @@ function compruebaAdyacentes(tableroReal, tableroVisible, posX, posY) {
     }
 }
 
-function victoria(tableroReal, tableroVisible) {
+const victoria=(tableroReal, tableroVisible)=>{
     let size = tableroReal.length;
 
     //recorre tó el tablero
@@ -137,7 +146,7 @@ function victoria(tableroReal, tableroVisible) {
 }
 
 //desafío opcional
-function objetoPartida(tableroReal, tableroVisible, numMinas, intentos){
+const objetoPartida=(tableroReal, tableroVisible, numMinas, intentos)=>{
     return {
         tableroReal: tableroReal,
         tableroVisible: tableroVisible,
@@ -146,21 +155,13 @@ function objetoPartida(tableroReal, tableroVisible, numMinas, intentos){
     }
 }
 
-function isEmpty(val){//robado de internet - comprueba si una variable está vacía, está indefinida o tiene longitud cero
+const isEmpty=(val)=>{//robado de internet - comprueba si una variable está vacía, está indefinida o tiene longitud cero
     return (val === undefined || val == null || val.length <= 0);
 }
 
-let juego = {
-    iniciado: false,
-    size: 0,
-    turnos: 0,
-    numMinas: 0,
-    tableroReal: [],
-    tableroVisible: [],
-    fin: false,
-};
 
-function iniciarJuego() {//primer turno
+
+const iniciarJuego=()=> {//primer turno
     console.clear();//limpia al iniciar
     let size = pideSizeTablero();//tamaño del tablero
     let numMinas = Math.floor(size * size * 0.2);//cantidad de minas proporcional
@@ -185,9 +186,10 @@ function iniciarJuego() {//primer turno
 
 
     mostrarTablero(tableroVisible);
+    tableroHTML();
 }
 
-function siguienteTurno() {//avanza el turno
+const siguienteTurno=()=> {//avanza el turno
     if (!juego.iniciado || juego.fin) return;
 
     let posX = pideCoordenada("X", juego.size);
@@ -213,52 +215,85 @@ function siguienteTurno() {//avanza el turno
     mostrarTablero(juego.tableroVisible);
 }
 
-function tableroHTML(tablero, posX = -1, posY = -1) {
-    let output = "";
+const tableroHTML=()=>{
+
+    let tablero = juego.tableroVisible;
+
+    const tabla = document.getElementById("tabla");
+
+
+    tabla.innerHTML = "";
 
     for (let i = 0; i < tablero.length; i++) {
-        output += "<tr>"; // empieza una nueva fila
-        for (let j = 0; j < tablero[i].length; j++) {
-            output += `<td class='casilla' onclick='pulsaCasilla(${i}, ${j})'>
-                    ${meteIcono(tablero[i][j])}</td>`;
-        }
-        output += "</tr>"; // cierra la fila
-    }
+        //fila vacía
+        const tr = document.createElement("tr");
 
-    // Inserta el HTML dentro de la tabla
-    document.getElementById("tabla").innerHTML = output;
+        for (let j = 0; j < tablero[i].length; j++) {
+            //casilla
+            const td = document.createElement("td");
+            td.className = "casilla";
+            td.innerHTML = meteIcono(tablero[i][j]);
+            //evento de pulsar
+            td.onclick = () => pulsaCasilla(i, j);
+            td.oncontextmenu=() => {
+                // let img = document.createElement("img");
+                // img.src = "./img/flag.png";
+                td.innerHTML = "<img class='img_casilla' src='./img/flag.png' alt='caca'/>";
+            }
+
+            tr.appendChild(td);
+        }
+        tabla.appendChild(tr);
+    }
 }
 
-function pulsaCasilla(row, col){
-    if (!juego.iniciado) return;
-
-    let posX = row;
-    let posY = col;
+const pulsaCasilla = (posX, posY) => {
+    //valida si la partida está terminada
+    if (!juego.iniciado || juego.fin) return;
 
     juego.turnos++;
 
-    if (juego.tableroReal[posX][posY] === "*") {//pierdes y termina
-        alert("¡BOOM! Has perdido.");
+    //pierdes
+    if (juego.tableroReal[posX][posY] === "*") {
+        //revela el tablero
         juego.tableroVisible = juego.tableroReal;
-        mostrarTablero(juego.tableroReal);
+
+        //pinta el tablero revelado
+        tableroHTML();
+
+        // fin
         juego.fin = true;
+
+        //necesario para que el navegador tenga tiempo de pintar el tablero antes del alert
+        setTimeout(() => {
+            alert("¡BOOM! Has perdido.");
+        }, 50);
         return;
     }
 
-
+    //jugada normal
     compruebaAdyacentes(juego.tableroReal, juego.tableroVisible, posX, posY);
 
-    if (victoria(juego.tableroReal, juego.tableroVisible)) {//ganas
-        alert("¡Has ganado!");
-        juego.tableroVisible = juego.tableroReal;
-        juego.fin = true;
-    }
+    //pinta la jugada
+    tableroHTML();
 
-    mostrarTablero(juego.tableroVisible);
+    //victoria
+    if (victoria(juego.tableroReal, juego.tableroVisible)) {
+        juego.fin = true;
+
+        // Opcional: mostramos todo al ganar
+        juego.tableroVisible = juego.tableroReal;
+        tableroHTML();
+
+        // Retrasamos la alerta de victoria para que veas el tablero completo primero
+        setTimeout(() => {
+            alert("¡Has ganado!");
+        }, 50);
+    }
 }
 
 
-function meteIcono(valorCasillas){
+const meteIcono = (valorCasillas) => {
     switch (valorCasillas) {
         case "X":
             return "<img class='img_casilla' src=\"./img/x.gif\" alt=\"\">";
@@ -267,13 +302,13 @@ function meteIcono(valorCasillas){
         case 0:
             return "<img class='img_casilla' src=\"./img/cero.png\" alt=\"\">";
         default:
-            return "<p class='txt_casilla'>"+valorCasillas+"</p>";
+            return "<p class='txt_casilla'>" + valorCasillas + "</p>";
 
     }
 }
 
-var save;
-function botonGuardar() {
+
+const botonGuardar = () => {
     save = objetoPartida(
         JSON.parse(JSON.stringify(juego.tableroReal)),
         JSON.parse(JSON.stringify(juego.tableroVisible)),
@@ -286,7 +321,7 @@ function botonGuardar() {
     alert("Partida guardada!");
 }
 
-function botonCargar() {
+const botonCargar = () => {
     if (!isEmpty(save)) {
         juego.tableroReal = JSON.parse(JSON.stringify(save.tableroReal));
         juego.tableroVisible = JSON.parse(JSON.stringify(save.tableroVisible));
