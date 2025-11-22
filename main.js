@@ -49,8 +49,6 @@ const pideCoordenada = (tag, sizeTablero)=>{
     }
 }
 
-
-
 const colocaMinas=(tablero, cantidad)=>{//coloca minas deseadas en posición random dentro del tablero
     let size = tablero.length;
     let minasColocadas = 0;//contador
@@ -215,32 +213,34 @@ const siguienteTurno=()=> {//avanza el turno
     mostrarTablero(juego.tableroVisible);
 }
 
-const tableroHTML=()=>{
-
+const tableroHTML = () => {
     let tablero = juego.tableroVisible;
-
     const tabla = document.getElementById("tabla");
-
-
     tabla.innerHTML = "";
 
     for (let i = 0; i < tablero.length; i++) {
-        //fila vacía
         const tr = document.createElement("tr");
 
         for (let j = 0; j < tablero[i].length; j++) {
-            //casilla
             const td = document.createElement("td");
             td.className = "casilla";
             td.innerHTML = meteIcono(tablero[i][j]);
-            //evento de pulsar
             td.onclick = () => pulsaCasilla(i, j);
-            td.oncontextmenu=() => {
-                // let img = document.createElement("img");
-                // img.src = "./img/flag.png";
-                td.innerHTML = "<img class='img_casilla' src='./img/flag.png' alt='caca'/>";
+            td.oncontextmenu = (e) => {
+                e.preventDefault();
+                if (tablero[i][j] === "X") {
+                    juego.tableroVisible[i][j] = "F";
+                }
+                tableroHTML();
             }
+            td.ondblclick = (e) =>{
+                e.preventDefault();
 
+                if (tablero[i][j] === "F") {
+                    juego.tableroVisible[i][j] = "X";
+                }
+                tableroHTML();
+            }
             tr.appendChild(td);
         }
         tabla.appendChild(tr);
@@ -248,8 +248,10 @@ const tableroHTML=()=>{
 }
 
 const pulsaCasilla = (posX, posY) => {
-    //valida si la partida está terminada
+    //
     if (!juego.iniciado || juego.fin) return;
+
+    if (juego.tableroVisible[posX][posY] === "F") return;
 
     juego.turnos++;
 
@@ -281,11 +283,11 @@ const pulsaCasilla = (posX, posY) => {
     if (victoria(juego.tableroReal, juego.tableroVisible)) {
         juego.fin = true;
 
-        // Opcional: mostramos todo al ganar
+        //muestra todo al ganar
         juego.tableroVisible = juego.tableroReal;
         tableroHTML();
 
-        // Retrasamos la alerta de victoria para que veas el tablero completo primero
+        //retrasa el alert para que de tiempo a pintar el tablero descubierto
         setTimeout(() => {
             alert("¡Has ganado!");
         }, 50);
@@ -295,8 +297,10 @@ const pulsaCasilla = (posX, posY) => {
 
 const meteIcono = (valorCasillas) => {
     switch (valorCasillas) {
+        case "F":
+            return "<img class='img_casilla' src='./img/flag.png' alt='flag'/>";
         case "X":
-            return "<img class='img_casilla' src=\"./img/x.gif\" alt=\"\">";
+            return "<img class='img_casilla' src=\"./img/x.png\" alt=\"\">";
         case "*":
             return "<img class='img_casilla' src=\"./img/mina.gif\" alt=\"\">";
         case 0:
