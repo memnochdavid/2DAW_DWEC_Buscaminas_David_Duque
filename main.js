@@ -6,7 +6,11 @@ let juego = {
     tableroReal: [],
     tableroVisible: [],
     fin: false,
+    //se añaden para el cronómetor
+    tiempoTranscurrido: 0,
+    timerId: null,
 };
+let banderasCont = 0;
 let save;
 
 const getRandomInt =(max)=>{
@@ -26,6 +30,8 @@ const validaInput =(n,opc,sizeTablero = 0) =>{
             return n >= 1;//mínimo una mina
         case 3://pide coordenada para casilla
             return n >= sizeTablero;
+        case 4://pide dificultad - extra entrega 3
+            return n >= 1 && n <= 3; //1==fácil, 2==medio, 3==difícil
         default:
             break;
     }
@@ -40,14 +46,34 @@ const pideSizeTablero=()=>{
     }
 }
 
-const pideCoordenada = (tag, sizeTablero)=>{
-    let pos;
-    while (true) {
-        pos = parseInt(prompt(`Coordenada ${tag}:`));
-        if (!validaInput(pos,3, sizeTablero)) return pos;
-        alert("Input inválido. Tu coordenada se sale del tablero!");
+const pideDificultad =() =>{
+    let dificultad = 0;
+    while(true){
+        dificultad = parseInt(prompt("Elige un nivel de dificultad (1-3):"));
+        if(validaInput(dificultad, 4)) {
+            switch(dificultad){
+                case 1:
+                    return 0.2;
+                case 2:
+                    return 0.3;
+                case 3:
+                    return 0.4;
+                default:
+                    break;
+            }
+        }
+        alert("Input inválido. Sólo números positivos entre 1 y 3");
     }
 }
+
+// const pideCoordenada = (tag, sizeTablero)=>{
+//     let pos;
+//     while (true) {
+//         pos = parseInt(prompt(`Coordenada ${tag}:`));
+//         if (!validaInput(pos,3, sizeTablero)) return pos;
+//         alert("Input inválido. Tu coordenada se sale del tablero!");
+//     }
+// }
 
 const colocaMinas=(tablero, cantidad)=>{//coloca minas deseadas en posición random dentro del tablero
     let size = tablero.length;
@@ -162,7 +188,8 @@ const isEmpty=(val)=>{//robado de internet - comprueba si una variable está vac
 const iniciarJuego=()=> {//primer turno
     console.clear();//limpia al iniciar
     let size = pideSizeTablero();//tamaño del tablero
-    let numMinas = Math.floor(size * size * 0.2);//cantidad de minas proporcional
+    let dificultad = pideDificultad();//dif 1 == 0.2, dif 2 == 0.3, dif 3 == 0.4
+    let numMinas = Math.floor(size * size * dificultad);//cantidad de minas proporcional
 
     alert(`Se colocarán ${numMinas} minas.`);
 
@@ -182,36 +209,36 @@ const iniciarJuego=()=> {//primer turno
         fin: false
     };
 
-
+    iniciarCronometro();
     mostrarTablero(tableroVisible);
     tableroHTML();
 }
 
-const siguienteTurno=()=> {//avanza el turno
-    if (!juego.iniciado || juego.fin) return;
-
-    let posX = pideCoordenada("X", juego.size);
-    let posY = pideCoordenada("Y", juego.size);
-
-    juego.turnos++;
-
-    if (juego.tableroReal[posX][posY] === "*") {//pierdes y termina
-        alert("¡BOOM! Has perdido.");
-        mostrarTablero(juego.tableroReal);
-        juego.fin = true;
-        return;
-    }
-
-
-    compruebaAdyacentes(juego.tableroReal, juego.tableroVisible, posX, posY);
-
-    if (victoria(juego.tableroReal, juego.tableroVisible)) {//ganas
-        alert("¡Has ganado!");
-        juego.fin = true;
-    }
-
-    mostrarTablero(juego.tableroVisible);
-}
+// const siguienteTurno=()=> {//avanza el turno
+//     if (!juego.iniciado || juego.fin) return;
+//
+//     let posX = pideCoordenada("X", juego.size);
+//     let posY = pideCoordenada("Y", juego.size);
+//
+//     juego.turnos++;
+//
+//     if (juego.tableroReal[posX][posY] === "*") {//pierdes y termina
+//         alert("¡BOOM! Has perdido.");
+//         mostrarTablero(juego.tableroReal);
+//         juego.fin = true;
+//         return;
+//     }
+//
+//
+//     compruebaAdyacentes(juego.tableroReal, juego.tableroVisible, posX, posY);
+//
+//     if (victoria(juego.tableroReal, juego.tableroVisible)) {//ganas
+//         alert("¡Has ganado!");
+//         juego.fin = true;
+//     }
+//
+//     mostrarTablero(juego.tableroVisible);
+// }
 
 const tableroHTML = () => {
     let tablero = juego.tableroVisible;
@@ -230,6 +257,7 @@ const tableroHTML = () => {
                 e.preventDefault();
                 if (tablero[i][j] === "X") {
                     juego.tableroVisible[i][j] = "F";
+                    banderasCont ++;
                 }
                 tableroHTML();
             }
@@ -238,6 +266,7 @@ const tableroHTML = () => {
 
                 if (tablero[i][j] === "F") {
                     juego.tableroVisible[i][j] = "X";
+                    banderasCont --;
                 }
                 tableroHTML();
             }
@@ -245,6 +274,11 @@ const tableroHTML = () => {
         }
         tabla.appendChild(tr);
     }
+    const banderas = document.getElementById("banderas");
+    // const numBanderas = document.createElement("span");
+    banderas.innerHTML = `Banderas: ${banderasCont}`;
+    // banderas.appendChild(numBanderas);
+
 }
 
 const pulsaCasilla = (posX, posY) => {
@@ -259,6 +293,7 @@ const pulsaCasilla = (posX, posY) => {
     if (juego.tableroReal[posX][posY] === "*") {
         //revela el tablero
         juego.tableroVisible = juego.tableroReal;
+        pararCronometro();
 
         //pinta el tablero revelado
         tableroHTML();
@@ -281,6 +316,7 @@ const pulsaCasilla = (posX, posY) => {
 
     //victoria
     if (victoria(juego.tableroReal, juego.tableroVisible)) {
+        pararCronometro();
         juego.fin = true;
 
         //muestra todo al ganar
@@ -335,8 +371,38 @@ const botonCargar = () => {
         juego.iniciado = true;
         alert("Partida cargada!");
         mostrarTablero(juego.tableroVisible);
+        tableroHTML();
         console.table("Partida cargada:", save)//debug
     } else {
         alert("No hay partida guardada!");
+    }
+}
+
+
+//cornómetro
+const actualizarCronometro=()=> {
+    juego.tiempoTranscurrido++;
+
+    let minutos = Math.floor(juego.tiempoTranscurrido / 60);
+    let segundos = juego.tiempoTranscurrido % 60;
+
+    let minStr = minutos < 10 ? "0" + minutos : minutos;
+    let secStr = segundos < 10 ? "0" + segundos : segundos;
+
+    document.getElementById("cronometro").innerText = `Tiempo: ${minStr}:${secStr}`;
+}
+
+const iniciarCronometro=()=> {
+    if (juego.timerId) clearInterval(juego.timerId);
+
+    juego.tiempoTranscurrido = 0;
+
+    juego.timerId = setInterval(actualizarCronometro, 1000);
+}
+
+const pararCronometro=()=> {
+    if (juego.timerId) {
+        clearInterval(juego.timerId);
+        juego.timerId = null;
     }
 }

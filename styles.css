@@ -112,14 +112,23 @@ table {
     width: 80px;
     height: auto;
     padding: 0;
-    /*display: flex;*/
 }
 .txt_casilla {
     font-size: 65px;
-    margin: 0;        /* elimina márgenes por defecto */
-    line-height: 1;   /* opcional, controla la altura de línea */
+    margin: 0;
+    line-height: 1;
     display: flex;
     justify-content: center;
     align-items: center;
-    /*height: 100%;     !* fuerza a ocupar la altura de la celda *!*/
+}
+
+
+#stats{
+    font-size: 65px;
+    margin: 0;
+    line-height: 1;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
 }
