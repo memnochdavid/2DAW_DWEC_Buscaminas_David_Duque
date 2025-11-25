@@ -216,6 +216,7 @@ const iniciarJuego=()=> {//primer turno
     tableroHTML();
 }
 
+//se encarga de mostrar el primer paso al jugador
 const revelaPrimeraLibre = ()=>{
     let sizeTablero = juego.tableroReal.length;
     let encontrado = false;
