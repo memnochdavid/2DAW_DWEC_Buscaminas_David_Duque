@@ -12,7 +12,7 @@ body {
 }
 
 h1 {
-    font-family: 'Courier New', Courier, monospace;
+    font-family: system-ui;
 }
 
 .botones {
@@ -26,6 +26,11 @@ h1 {
 #ejercicio {
     background-color: rgb(219, 83, 83);
 }
+/*#ejercicio:nth-child(1) {*/
+/*    display: flex;*/
+/*    flex-direction: column;*/
+/*    gap: 2rem;*/
+/*}*/
 
 body > div {
     margin: 1%;
@@ -89,6 +94,8 @@ table {
     /*border-collapse: collapse;*/
     /*table-layout: auto; !* celdas crecen según contenido *!*/
 }
+
+
 .casilla {
     border: 1px solid black;
     text-align: center;
@@ -97,7 +104,7 @@ table {
     align-content: center;
     justify-content: center;
     background-color: rgb(255, 117, 117);
-    padding: 0; /* sin padding extra */
+    padding: 0;
     cursor: pointer;
     transition: all 0.1s ease-in-out;
 }
@@ -106,6 +113,34 @@ table {
     box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
     backdrop-filter: brightness(150%);
     border: 4px solid black;
+}
+.descubierto-num{
+    background-color: rgb(255, 218, 0);
+}
+.descubierto-vacio{
+    background-color: rgb(34, 203, 82);
+}
+.bandera{
+    background-color: rgb(255, 154, 52);
+}
+.mina{
+    background-color: rgb(38, 38, 38);
+}
+.icono-bandera {
+    width: 80%;
+    height: 80%;
+    margin: auto;
+    background-color: #000000;/*el color con el que pintará la bandera*/
+    /*usa la imagen como máscara*/
+    -webkit-mask-image: url('./img/flag.png');
+    mask-image: url('./img/flag.png');
+    /*posición y tamaño y mierdas*/
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    /*mask-position: center;*/
 }
 
 .img_casilla{

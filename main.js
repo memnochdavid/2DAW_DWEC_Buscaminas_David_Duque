@@ -190,6 +190,7 @@ const iniciarJuego=()=> {//primer turno
     let size = pideSizeTablero();//tamaño del tablero
     let dificultad = pideDificultad();//dif 1 == 0.2, dif 2 == 0.3, dif 3 == 0.4
     let numMinas = Math.floor(size * size * dificultad);//cantidad de minas proporcional
+    banderasCont = numMinas;
 
     alert(`Se colocarán ${numMinas} minas.`);
 
@@ -211,74 +212,91 @@ const iniciarJuego=()=> {//primer turno
 
     iniciarCronometro();
     mostrarTablero(tableroVisible);
+    revelaPrimeraLibre();
     tableroHTML();
 }
 
-// const siguienteTurno=()=> {//avanza el turno
-//     if (!juego.iniciado || juego.fin) return;
-//
-//     let posX = pideCoordenada("X", juego.size);
-//     let posY = pideCoordenada("Y", juego.size);
-//
-//     juego.turnos++;
-//
-//     if (juego.tableroReal[posX][posY] === "*") {//pierdes y termina
-//         alert("¡BOOM! Has perdido.");
-//         mostrarTablero(juego.tableroReal);
-//         juego.fin = true;
-//         return;
-//     }
-//
-//
-//     compruebaAdyacentes(juego.tableroReal, juego.tableroVisible, posX, posY);
-//
-//     if (victoria(juego.tableroReal, juego.tableroVisible)) {//ganas
-//         alert("¡Has ganado!");
-//         juego.fin = true;
-//     }
-//
-//     mostrarTablero(juego.tableroVisible);
-// }
+const revelaPrimeraLibre = ()=>{
+    let sizeTablero = juego.tableroReal.length;
+    let encontrado = false;
+    for(let i = 0; i < sizeTablero && !encontrado; i++){
+        for (let j = 0; j < sizeTablero && !encontrado; j++) {
+            if(juego.tableroReal[i][j] === 0){
+                pulsaCasilla(i,j);
+                encontrado = true;
+            }
+        }
+    }
+}
 
 const tableroHTML = () => {
+
     let tablero = juego.tableroVisible;
+    //referencia a la tabla en el DOM
     const tabla = document.getElementById("tabla");
+    //al ser recursiva, evita que se añadan casillas extra no deseadas
     tabla.innerHTML = "";
 
+    //recorre el tablero
     for (let i = 0; i < tablero.length; i++) {
+        //crea la fila
         const tr = document.createElement("tr");
 
         for (let j = 0; j < tablero[i].length; j++) {
+            //crea las casillas
             const td = document.createElement("td");
             td.className = "casilla";
-            td.innerHTML = meteIcono(tablero[i][j]);
-            td.onclick = () => pulsaCasilla(i, j);
+            //referencia el contenido de la casilla
+            const valor = tablero[i][j];
+            //asigna el icono o número correspondiente
+            td.innerHTML = meteIcono(valor);
+
+            //para que cambien los colores de las celdas dependiendo del contenido
+            if(typeof valor === "number" && valor > 0){
+                td.classList.add("descubierto-num");
+            }
+            if(typeof valor === "number" && valor === 0){
+                td.classList.add("descubierto-vacio");
+            }
+            if(typeof valor === "string" && valor === "F"){
+                td.classList.add("bandera");
+            }
+            if(typeof valor === "string" && valor === "*"){
+                td.classList.add("mina");
+            }
+
+            //eventos
+            td.onclick = () => {
+                if (tablero[i][j] === "F") return;
+
+                pulsaCasilla(i, j);
+            }
+
             td.oncontextmenu = (e) => {
                 e.preventDefault();
-                if (tablero[i][j] === "X") {
+                if (banderasCont > 0 && tablero[i][j] === "X") {
                     juego.tableroVisible[i][j] = "F";
-                    banderasCont ++;
+                    banderasCont--;
+                    tableroHTML();
                 }
-                tableroHTML();
             }
-            td.ondblclick = (e) =>{
-                e.preventDefault();
 
+            td.ondblclick = (e) => {
+                e.preventDefault();
                 if (tablero[i][j] === "F") {
                     juego.tableroVisible[i][j] = "X";
-                    banderasCont --;
+                    banderasCont++;
+                    tableroHTML();
                 }
-                tableroHTML();
             }
             tr.appendChild(td);
         }
         tabla.appendChild(tr);
     }
-    const banderas = document.getElementById("banderas");
-    // const numBanderas = document.createElement("span");
-    banderas.innerHTML = `Banderas: ${banderasCont}`;
-    // banderas.appendChild(numBanderas);
 
+    // Actualizar contador de banderas
+    const banderas = document.getElementById("banderas");
+    if(banderas) banderas.innerHTML = `Banderas: ${banderasCont}`;
 }
 
 const pulsaCasilla = (posX, posY) => {
@@ -334,11 +352,11 @@ const pulsaCasilla = (posX, posY) => {
 const meteIcono = (valorCasillas) => {
     switch (valorCasillas) {
         case "F":
-            return "<img class='img_casilla' src='./img/flag.png' alt='flag'/>";
+            return "<div class='icono-bandera'></div>";
         case "X":
             return "<img class='img_casilla' src=\"./img/x.png\" alt=\"\">";
         case "*":
-            return "<img class='img_casilla' src=\"./img/mina.gif\" alt=\"\">";
+            return "<img class='img_casilla' src=\"./img/caca.gif\" alt=\"\">";
         case 0:
             return "<img class='img_casilla' src=\"./img/cero.png\" alt=\"\">";
         default:
@@ -379,7 +397,7 @@ const botonCargar = () => {
 }
 
 
-//cornómetro
+//coronómetro
 const actualizarCronometro=()=> {
     juego.tiempoTranscurrido++;
 
