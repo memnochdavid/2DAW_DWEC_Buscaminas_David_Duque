@@ -24,7 +24,7 @@ h1 {
     gap: 1%;
     align-content: center;
     /*justify-content: center;*/
-    margin-top: 3%;
+    margin-top: 1%;
 }
 
 #ejercicio {
@@ -116,18 +116,36 @@ table {
     box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
     backdrop-filter: brightness(150%);
     border: 4px solid black;
+    background-color: rgb(255, 152, 152);
+
 }
 .descubierto-num{
     background-color: rgb(255, 218, 0);
 }
+.descubierto-num:hover{
+    background-color: rgb(255, 237, 135);
+
+}
 .descubierto-vacio{
     background-color: rgb(34, 203, 82);
+}
+.descubierto-vacio:hover{
+    background-color: rgb(147, 255, 178);
 }
 .bandera{
     background-color: rgb(255, 154, 52);
 }
+.bandera:hover{
+    background-color: rgb(255, 191, 131);
+}
 .mina{
     background-color: rgb(38, 38, 38);
+}
+.casilla img{
+    transition: all 0.1s ease-in-out;
+}
+.casilla img:hover{
+    scale: 2;
 }
 .icono-bandera {
     width: 60px;
@@ -163,7 +181,7 @@ table {
 
 #stats {
     font-size: 30px;
-    margin-top: 3%;
+    margin-top: 2%;
     /* line-height: 1; */
     display: flex
 ;
