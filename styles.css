@@ -141,6 +141,9 @@ table {
 .mina{
     background-color: rgb(38, 38, 38);
 }
+.mina:hover{
+    background-color: rgb(80, 80, 80);
+}
 .casilla img{
     transition: all 0.1s ease-in-out;
 }

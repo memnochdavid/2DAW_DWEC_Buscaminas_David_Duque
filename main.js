@@ -376,7 +376,7 @@ const botonGuardar = () => {
         // juego.fin = false,
         // juego.iniciado = true,
     );
-    console.table("Partida guardada:", save)//debug
+    console.table("Partida guardada:", save)//debug (y para hacer trampas)
     alert("Partida guardada!");
 }
 
