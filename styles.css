@@ -102,8 +102,8 @@ table {
 .casilla {
     border: 1px solid black;
     text-align: center;
-    width: 75px;
-    height: 75px;
+    width: 55px;
+    height: 55px;
     align-content: center;
     justify-content: center;
     background-color: rgb(255, 117, 117);
@@ -151,8 +151,8 @@ table {
     scale: 2;
 }
 .icono-bandera {
-    width: 60px;
-    height: 60px;
+    width: 40px;
+    height: 40px;
     margin: auto;
     background-color: #000000;/*el color con el que pintará la bandera*/
     /*usa la imagen como máscara*/
@@ -168,12 +168,12 @@ table {
 }
 
 .img_casilla{
-    width: 60px;
+    width: 40px;
     height: auto;
     padding: 0;
 }
 .txt_casilla {
-    font-size: 65px;
+    font-size: 40px;
     margin: 0;
     line-height: 1;
     display: flex;
